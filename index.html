@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Body -->
+    <div id="app">
+      <!-- Main Card -->
+      <div class="controls">
+        <input type="text" class="search-input" placeholder="Search city" />
+        <button class="unit-toggle">°C</button>
+      </div>
+      <div id="weather-card">
+        <div class="header">
+          <div class="location"></div>
+          <div class="temperature"></div>
+        </div>
+        <div class="widgets">
+          <div class="widget wind"></div>
+          <div class="widget humidity"></div>
+          <div class="widget uv"></div>
+          <div class="widget rain"></div>
+        </div>
+        <div class="description"></div>
+      </div>
+      <!-- Forecast -->
+      <div class="forecast"></div>
+
+      <!-- Error Handlers and Loaders -->
+      <div class="loader" hidden>Loading.</div>
+      <div class="error" hidden></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
