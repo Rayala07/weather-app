@@ -52,7 +52,6 @@ async function getWeather(city) {
     } else {
       throw new Error(rawData.status);
     }
-
     getForecast(city);
   } catch (err) {
     console.log(err);
@@ -71,6 +70,8 @@ async function getForecast(city) {
 
     let forecastData = await rawForecast.json();
 
+    console.log(forecastData);
+
     let forecastList = forecastData.list;
 
     let dailyForecast = [];
@@ -81,13 +82,13 @@ async function getForecast(city) {
           data: forecast.dt_txt,
           tempMin: forecast.main.temp_min,
           tempMax: forecast.main.temp_max,
+          weatherMain: forecast.weather[0].main,
           icon: forecast.weather[0].icon,
         });
       }
     });
 
-    let dailyData = dailyForecast;
-    renderData(dailyData);
+    renderData(dailyForecast);
   } catch (err) {
     console.log(err);
   }
@@ -101,14 +102,23 @@ function renderData(dailyData) {
 
   dailyData.forEach((day) => {
     const dateObj = new Date(day.data.replace(" ", "T"));
-
     const dayName = dateObj.toLocaleString("en-US", { weekday: "long" });
+
+    const hour = dateObj.getHours();
+
+    const isDay = hour >= 6 && hour <= 18;
+
+    const iconPath = getWeatherIcon(day.weatherMain, isDay);
+
+    console.log(day.weatherMain);
 
     generateHTML += `
       <div class="day-card">
         <div class="day">
           <div class="day-name">${dayName}</div>
-          <div class="day-icon"><img src="http://openweathermap.org/img/wn/${day.icon}@2x.png"></div>
+          <div class="weather-type">
+          ${day.weatherMain}</div>
+          <div class="day-icon"><img src="${iconPath}"></div>
         </div>
         <div class="temp">
           <p>Min: ${day.tempMin}°C</p><p>Max: ${day.tempMax}°C</p>
@@ -121,4 +131,20 @@ function renderData(dailyData) {
   forecastContainer.innerHTML = generateHTML;
 }
 
-function getWeatherIcon(weatherMain, isDay) {}
+function getWeatherIcon(weatherMain, isDay) {
+  if (!icon_map[weatherMain]) {
+    return icon_map.Clouds.default;
+  }
+
+  const weatherType = icon_map[weatherMain];
+
+  if (isDay && weatherType.day) {
+    return weatherType.day;
+  }
+
+  if (!isDay && weatherType.night) {
+    return weatherType.night;
+  }
+
+  return weatherType.default || icon_map.Clouds.default;
+}
