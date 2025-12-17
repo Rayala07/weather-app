@@ -1,4 +1,7 @@
 const forecastContainer = document.querySelector(".forecast");
+const locationEl = document.querySelector(".location");
+const tempEl = document.querySelector(".temperature");
+const descriptionContainer = document.querySelector(".description");
 
 const icon_map = {
   Clear: {
@@ -52,6 +55,8 @@ async function getWeather(city) {
     } else {
       throw new Error(rawData.status);
     }
+    console.log(data);
+    renderCurrentWeather(data);
     getForecast(city);
   } catch (err) {
     console.log(err);
@@ -69,8 +74,6 @@ async function getForecast(city) {
     }
 
     let forecastData = await rawForecast.json();
-
-    console.log(forecastData);
 
     let forecastList = forecastData.list;
 
@@ -95,7 +98,7 @@ async function getForecast(city) {
 }
 
 // Call the function to get Weather
-getWeather("Hyderabad");
+getWeather("Leh");
 
 function renderData(dailyData) {
   let generateHTML = "";
@@ -110,8 +113,6 @@ function renderData(dailyData) {
 
     const iconPath = getWeatherIcon(day.weatherMain, isDay);
 
-    console.log(day.weatherMain);
-
     generateHTML += `
       <div class="day-card">
         <div class="day">
@@ -121,7 +122,9 @@ function renderData(dailyData) {
           <div class="day-icon"><img src="${iconPath}"></div>
         </div>
         <div class="temp">
-          <p>Min: ${day.tempMin}°C</p><p>Max: ${day.tempMax}°C</p>
+          <p>Min: ${Math.round(day.tempMin)}°C</p><p>Max: ${Math.round(
+      day.tempMax
+    )}°C</p>
         </div>
       </div>
     `;
@@ -147,4 +150,21 @@ function getWeatherIcon(weatherMain, isDay) {
   }
 
   return weatherType.default || icon_map.Clouds.default;
+}
+
+function renderCurrentWeather(currWeatherData) {
+  let p = document.createElement("p");
+  p.classList.add("location-name");
+  p.textContent = currWeatherData.name;
+  locationEl.appendChild(p);
+
+  let p2 = document.createElement("p");
+  p2.classList.add("temp-value");
+  p2.textContent = `${Math.round(currWeatherData.main.temp)}°C`;
+  tempEl.appendChild(p2);
+
+  let p3 = document.createElement("p");
+  p3.classList.add("weather-desc");
+  p3.textContent = currWeatherData.weather[0].description;
+  descriptionContainer.appendChild(p3);
 }
