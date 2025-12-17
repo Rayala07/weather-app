@@ -1,7 +1,10 @@
 const forecastContainer = document.querySelector(".forecast");
 const locationEl = document.querySelector(".location");
 const tempEl = document.querySelector(".temperature");
+const weatherIconEl = document.querySelector(".icon-container");
 const descriptionContainer = document.querySelector(".description");
+const dayNameEl = document.querySelector(".day-name");
+const inputContainer = document.querySelector(".search-input");
 
 const icon_map = {
   Clear: {
@@ -44,6 +47,15 @@ let apiKey = "c18cf74ea4e0a2e7cabd5b11997dc92c";
 let units = "metric";
 let data;
 
+let cityName = "";
+
+inputContainer.addEventListener("keyup", (event) => {
+  if (event.key === "Enter" && inputContainer.value !== "") {
+    cityName = inputContainer.value;
+    getWeather(cityName);
+  }
+});
+
 async function getWeather(city) {
   try {
     let rawData = await fetch(
@@ -55,7 +67,6 @@ async function getWeather(city) {
     } else {
       throw new Error(rawData.status);
     }
-    console.log(data);
     renderCurrentWeather(data);
     getForecast(city);
   } catch (err) {
@@ -96,9 +107,6 @@ async function getForecast(city) {
     console.log(err);
   }
 }
-
-// Call the function to get Weather
-getWeather("Leh");
 
 function renderData(dailyData) {
   let generateHTML = "";
@@ -153,6 +161,14 @@ function getWeatherIcon(weatherMain, isDay) {
 }
 
 function renderCurrentWeather(currWeatherData) {
+  // Clear before creating -
+  dayNameEl.innerHTML = "";
+  weatherIconEl.innerHTML = "";
+  locationEl.innerHTML = "";
+  tempEl.innerHTML = "";
+  descriptionContainer.innerHTML = "";
+
+  // Now creating -
   let p = document.createElement("p");
   p.classList.add("location-name");
   p.textContent = currWeatherData.name;
@@ -160,11 +176,32 @@ function renderCurrentWeather(currWeatherData) {
 
   let p2 = document.createElement("p");
   p2.classList.add("temp-value");
-  p2.textContent = `${Math.round(currWeatherData.main.temp)}°C`;
+  p2.textContent = `${Math.round(currWeatherData.main.feels_like)}°C`;
   tempEl.appendChild(p2);
 
   let p3 = document.createElement("p");
   p3.classList.add("weather-desc");
   p3.textContent = currWeatherData.weather[0].description;
   descriptionContainer.appendChild(p3);
+
+  const utcTime = currWeatherData.dt * 1000;
+  const cityOffset = currWeatherData.timezone * 1000;
+
+  const cityTime = new Date(utcTime + cityOffset);
+  const hour = cityTime.getUTCHours();
+  const dayName = cityTime.toLocaleString("en-US", { weekday: "long" });
+
+  const isDay = hour >= 6 && hour <= 18;
+
+  const iconPath = getWeatherIcon(currWeatherData.weather[0].main, isDay);
+
+  let p4 = document.createElement("p");
+  p4.classList.add("day");
+  p4.textContent = dayName;
+  dayNameEl.appendChild(p4);
+
+  let image = document.createElement("img");
+  image.classList.add("weather-icon");
+  image.src = iconPath;
+  weatherIconEl.appendChild(image);
 }
