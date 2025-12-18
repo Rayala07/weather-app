@@ -52,6 +52,7 @@ let cityName = "";
 inputContainer.addEventListener("keyup", (event) => {
   if (event.key === "Enter" && inputContainer.value !== "") {
     cityName = inputContainer.value;
+    localStorage.setItem("lastCity", cityName);
     getWeather(cityName);
   }
 });
@@ -204,4 +205,24 @@ function renderCurrentWeather(currWeatherData) {
   image.classList.add("weather-icon");
   image.src = iconPath;
   weatherIconEl.appendChild(image);
+}
+
+function defaultCity() {
+  let randomNumber = Math.floor(Math.random() * 3) + 1;
+
+  if (randomNumber === 1) {
+    getWeather("Delhi");
+  } else if (randomNumber === 2) {
+    getWeather("Mumbai");
+  } else {
+    getWeather("Hyderabad");
+  }
+}
+
+const lastCity = localStorage.getItem("lastCity");
+
+if (lastCity) {
+  getWeather(lastCity);
+} else {
+  defaultCity();
 }
