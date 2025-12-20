@@ -5,6 +5,9 @@ const weatherIconEl = document.querySelector(".icon-container");
 const descriptionContainer = document.querySelector(".description");
 const dayNameEl = document.querySelector(".day-name");
 const inputContainer = document.querySelector(".search-input");
+const windEl = document.querySelector(".wind");
+const humidityEl = document.querySelector(".humidity");
+const rainEl = document.querySelector(".rain");
 
 const icon_map = {
   Clear: {
@@ -52,7 +55,7 @@ let cityName = "";
 inputContainer.addEventListener("keyup", (event) => {
   if (event.key === "Enter" && inputContainer.value !== "") {
     cityName = inputContainer.value;
-    localStorage.setItem("lastCity", cityName);
+    sessionStorage.setItem("lastCity", cityName);
     getWeather(cityName);
   }
 });
@@ -68,6 +71,7 @@ async function getWeather(city) {
     } else {
       throw new Error(rawData.status);
     }
+    console.log(data);
     renderCurrentWeather(data);
     getForecast(city);
   } catch (err) {
@@ -123,20 +127,20 @@ function renderData(dailyData) {
     const iconPath = getWeatherIcon(day.weatherMain, isDay);
 
     generateHTML += `
-      <div class="day-card">
-        <div class="day">
-          <div class="day-name">${dayName}</div>
-          <div class="weather-type">
-          ${day.weatherMain}</div>
-          <div class="day-icon"><img src="${iconPath}"></div>
-        </div>
-        <div class="temp">
-          <p>Min: ${Math.round(day.tempMin)}°C</p><p>Max: ${Math.round(
+        <div class="day-card">
+          <div class="day">
+            <div class="day-name">${dayName}</div>
+            <div class="weather-type">
+            ${day.weatherMain}</div>
+            <div class="day-icon"><img src="${iconPath}"></div>
+          </div>
+          <div class="temp">
+            <p>Min: ${Math.round(day.tempMin)}°C</p><p>Max: ${Math.round(
       day.tempMax
     )}°C</p>
+          </div>
         </div>
-      </div>
-    `;
+      `;
   });
 
   // console.log(generateHTML);
@@ -171,13 +175,17 @@ function renderCurrentWeather(currWeatherData) {
 
   // Now creating -
   let p = document.createElement("p");
+  let span = document.createElement("span");
+  span.classList.add("temp-unit");
+  span.textContent = "°c";
   p.classList.add("location-name");
   p.textContent = currWeatherData.name;
   locationEl.appendChild(p);
 
   let p2 = document.createElement("p");
   p2.classList.add("temp-value");
-  p2.textContent = `${Math.round(currWeatherData.main.feels_like)}°C`;
+  p2.textContent = `${Math.round(currWeatherData.main.feels_like)}`;
+  p2.appendChild(span);
   tempEl.appendChild(p2);
 
   let p3 = document.createElement("p");
@@ -205,6 +213,14 @@ function renderCurrentWeather(currWeatherData) {
   image.classList.add("weather-icon");
   image.src = iconPath;
   weatherIconEl.appendChild(image);
+
+  humidityEl.textContent = currWeatherData.main.humidity + "%";
+  if (currWeatherData.rain?.["3h"]) {
+    rainEl.textContent = currWeatherData.rain["3h"];
+  } else {
+    rainEl.textContent = "No Rain";
+  }
+  windEl.textContent = currWeatherData.wind.speed + "m/s";
 }
 
 function defaultCity() {
@@ -219,9 +235,13 @@ function defaultCity() {
   }
 }
 
-const lastCity = localStorage.getItem("lastCity");
+const isNewSession = !sessionStorage.getItem("sessionStarted");
+const lastCity = sessionStorage.getItem("lastCity");
 
-if (lastCity) {
+if (isNewSession) {
+  sessionStorage.setItem("sessionStarted", "true");
+  defaultCity();
+} else if (lastCity) {
   getWeather(lastCity);
 } else {
   defaultCity();

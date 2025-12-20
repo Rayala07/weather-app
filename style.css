@@ -57,7 +57,7 @@ html {
   max-width: 45rem;
   padding: 2rem;
   border-radius: 1.5rem;
-  /* background-color: rgb(53, 53, 105); */
+  background-color: rgb(53, 53, 105);
 }
 
 .header {
@@ -65,6 +65,26 @@ html {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+}
+
+.location {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.temperature {
+  font-size: 4rem;
+  font-weight: 600;
+}
+
+.temp-unit {
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+  opacity: 0.7;
+}
+
+.day-name {
+  font-size: 1.2rem;
 }
 
 .weather-icon {
