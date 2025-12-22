@@ -46,7 +46,7 @@ const icon_map = {
   },
 };
 
-let apiKey = "c18cf74ea4e0a2e7cabd5b11997dc92c";
+let apiKey = "YOUR_API_KEY_HERE";
 let units = "metric";
 let data;
 
