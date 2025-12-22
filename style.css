@@ -16,14 +16,19 @@ html {
 }
 
 #app {
-  height: 100%;
+  min-height: 100vh;
   width: 100%;
-  background-color: rgb(15, 15, 15);
+  background: url(https://images.unsplash.com/photo-1557862352-eca16a58e89b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+  background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2rem;
   padding: 2rem;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 .controls {
@@ -42,6 +47,11 @@ html {
   padding: 0.5rem 0.5rem;
   border-radius: 0.7rem;
   font-size: 1rem;
+  background: rgba(28, 28, 28, 0.12);
+  backdrop-filter: blur(1rem);
+  -webkit-backdrop-filter: blur(1rem);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: whitesmoke;
 }
 
 .unit-toggle {
@@ -49,6 +59,8 @@ html {
   padding: 0.5rem 0.5rem;
   border-radius: 0.7rem;
   font-size: 1rem;
+  background: rgba(28, 28, 28, 0.12);
+  color: rgb(186, 220, 250);
   cursor: pointer;
 }
 
@@ -57,7 +69,15 @@ html {
   max-width: 45rem;
   padding: 2rem;
   border-radius: 1.5rem;
-  background-color: rgb(53, 53, 105);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(1rem);
+  -webkit-backdrop-filter: blur(1rem);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: all 0.3s ease;
+}
+
+#weather-card:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .header {
@@ -94,10 +114,25 @@ html {
 
 .widgets {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   margin-top: 2rem;
   margin-bottom: 2rem;
+}
+
+.wind,
+.humidity,
+.rain {
+  padding: 0.5rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 10rem;
+
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(0.7rem);
+  -webkit-backdrop-filter: blur(0.7rem);
+  border-radius: 1rem;
 }
 
 .description {
@@ -108,16 +143,24 @@ html {
 .forecast {
   width: 100%;
   max-width: 15rem;
-  /* background-color: rgb(145, 145, 221); */
   display: flex;
   overflow-x: auto;
-  gap: 0.7rem;
+  gap: 0.5rem;
   scroll-snap-type: x mandatory;
   border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(1rem);
+  -webkit-backdrop-filter: blur(1rem);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: all 0.3s ease;
 }
 
 .forecast::-webkit-scrollbar {
   display: none;
+}
+
+.forecast:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .day-card {
@@ -128,4 +171,17 @@ html {
   flex-shrink: 0;
   scroll-snap-align: start;
   scroll-snap-stop: start;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.temp {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  text-align: right;
 }

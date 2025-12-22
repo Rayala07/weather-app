@@ -71,7 +71,6 @@ async function getWeather(city) {
     } else {
       throw new Error(rawData.status);
     }
-    console.log(data);
     renderCurrentWeather(data);
     getForecast(city);
   } catch (err) {
@@ -132,12 +131,11 @@ function renderData(dailyData) {
             <div class="day-name">${dayName}</div>
             <div class="weather-type">
             ${day.weatherMain}</div>
-            <div class="day-icon"><img src="${iconPath}"></div>
+            <div class="day-icon"><img src="${iconPath}" class="w-icon" ></div>
           </div>
           <div class="temp">
-            <p>Min: ${Math.round(day.tempMin)}°C</p><p>Max: ${Math.round(
-      day.tempMax
-    )}°C</p>
+            <p>Min: ${Math.round(day.tempMin)}°C</p>
+            <p>Max: ${Math.round(day.tempMax)}°C</p>
           </div>
         </div>
       `;
@@ -172,6 +170,10 @@ function renderCurrentWeather(currWeatherData) {
   locationEl.innerHTML = "";
   tempEl.innerHTML = "";
   descriptionContainer.innerHTML = "";
+  dayNameEl.innerHTML = "";
+  humidityEl.innerHTML = "";
+  rainEl.innerHTML = "";
+  windEl.innerHTML = "";
 
   // Now creating -
   let p = document.createElement("p");
@@ -190,7 +192,7 @@ function renderCurrentWeather(currWeatherData) {
 
   let p3 = document.createElement("p");
   p3.classList.add("weather-desc");
-  p3.textContent = currWeatherData.weather[0].description;
+  p3.textContent = "It feels like, " + currWeatherData.weather[0].description;
   descriptionContainer.appendChild(p3);
 
   const utcTime = currWeatherData.dt * 1000;
@@ -214,13 +216,52 @@ function renderCurrentWeather(currWeatherData) {
   image.src = iconPath;
   weatherIconEl.appendChild(image);
 
-  humidityEl.textContent = currWeatherData.main.humidity + "%";
+  let p5 = document.createElement("p");
+  p5.classList.add("wind-tag");
+  p5.innerHTML = "<i class='ri-windy-fill'></i> Wind";
+
+  let p6 = document.createElement("p");
+  p6.classList.add("wind-value");
+  p6.textContent = currWeatherData.wind.speed + "m/s";
+
+  windEl.appendChild(p5);
+  windEl.appendChild(p6);
+
+  let p7 = document.createElement("p");
+  p7.classList.add("humidity-tag");
+  p7.innerHTML = "<i class='ri-water-percent-line'></i> Humidity";
+
+  let p8 = document.createElement("p");
+  p8.classList.add("humidity-value");
+  p8.textContent = currWeatherData.main.humidity + "%";
+
+  humidityEl.appendChild(p7);
+  humidityEl.appendChild(p8);
+
   if (currWeatherData.rain?.["3h"]) {
+    let p9 = document.createElement("p");
+    p9.classList.add("rain-tag");
+    p9.innerHTML = "<i class='ri-drizzle-line'></i> Rain";
+
+    let p10 = document.createElement("p");
+    p10.classList.add("rain-value");
+    p10.textContent = currWeatherData.rain["3h"] + "mm";
+
+    rainEl.appendChild(p9);
+    rainEl.appendChild(p10);
     rainEl.textContent = currWeatherData.rain["3h"];
   } else {
-    rainEl.textContent = "No Rain";
+    let p9 = document.createElement("p");
+    p9.classList.add("rain-tag");
+    p9.innerHTML = "<i class='ri-drizzle-line'></i> Rain";
+
+    let p10 = document.createElement("p");
+    p10.classList.add("rain-value");
+    p10.textContent = "No Rain Expected";
+
+    rainEl.appendChild(p9);
+    rainEl.appendChild(p10);
   }
-  windEl.textContent = currWeatherData.wind.speed + "m/s";
 }
 
 function defaultCity() {
