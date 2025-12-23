@@ -46,7 +46,7 @@ const icon_map = {
   },
 };
 
-let apiKey = "YOUR_API_KEY_HERE";
+const apiKey = window.ENV_API_KEY;
 let units = "metric";
 let data;
 
